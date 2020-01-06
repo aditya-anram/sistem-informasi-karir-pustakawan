@@ -1,0 +1,94 @@
+<?php
+session_start();
+if(!isset($_SESSION['username'])) {
+   header('location:../../index.php'); 
+} else { 
+   $username = $_SESSION['username']; 
+}
+?>
+
+<?php
+    require('fungsi_sikap.php');
+    $akses = new Sikap();
+    $akses->koneksi();
+?>
+
+<?php
+
+$id = $_POST['id_riwayat'];
+ $niy = $_POST['niy'];
+$riwayat = $_POST['riwayat'];
+$angka_kk_saya = "1";
+$tanggal = $_POST['tanggal'];
+$data1 =  $_FILES['upload_data']['tmp_name'];
+$Keterangan = $_POST['komentar3'];
+$status1 = $_POST['status_penilai'];
+$status = "baru";
+
+
+$data = $_FILES['upload_data']['name'];
+$extensi = explode('.', $data);
+ $file1 = "file-".round(microtime(true)).".".end($extensi);
+$sumber = $data1;
+  if($data == ''){
+$akses->ubahriwayat2($riwayat,$tanggal,$Keterangan,$niy,$id,$penilai);
+echo "<script>window.location='data_pendidikan_1a.php'</script>";
+
+} else {
+  $file_awal = $akses->datariwayat($id)->fetch_object()->upload_data;
+  unlink("upload1/".$file_awal);
+
+  $upload = move_uploaded_file($sumber, "upload1/".$file1);
+
+
+
+
+                                                  if ($upload) {
+                                                          $akses->ubahriwayat3($riwayat,$tanggal,$Keterangan,$niy,$id,$file1);
+                                                    
+                                                         echo "
+                                                              <script type='text/javascript'>
+                                                            Swal.fire({
+                                                              position: 'middle',
+                                                              type: 'success',
+                                                              title: 'Data disimpan',
+                                                              showConfirmButton: true,
+                                                              confirmButtonColor: '#3085d6',
+                                                              confirmButtonText: 'Kembali'
+
+                                                            }).then((result) => {
+                                                              if(result.value){
+                                                                location.href='data_pendidikan_1a.php'
+                                                              }
+                                                              })
+                                                            </script>
+                                                            ";
+                                                     
+
+                                                      # code...
+                                                  } else{
+                                                   echo "
+                                                              <script type='text/javascript'>
+                                                            Swal.fire({
+                                                              position: 'middle',
+                                                              type: 'error',
+                                                              title: 'File yang anda kirim tidak sesuai !!',
+                                                              showConfirmButton: true,
+                                                              confirmButtonColor: '#3085d6',
+                                                              confirmButtonText: 'Kembali'
+
+                                                            }).then((result) => {
+                                                              if(result.value){
+                                                                location.href='data_pendidikan_1a.php'
+                                                              }
+                                                              })
+                                                            </script>
+                                                            ";
+                                                  }
+}
+
+
+
+
+
+?>
